@@ -1,17 +1,15 @@
-name: Sfera VPN Bot Test
+name: Sfera VPN Bot
 
 on:
   workflow_dispatch:
 
 jobs:
-  test:
+  bot:
     runs-on: ubuntu-latest
     steps:
-      - name: Download project
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
 
@@ -19,4 +17,6 @@ jobs:
         run: pip install aiogram
 
       - name: Check bot code
+        env:
+          BOT_TOKEN: ${{ secrets.BOT_TOKEN }}
         run: python -m py_compile bot.py
