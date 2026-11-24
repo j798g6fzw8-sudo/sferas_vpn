@@ -10,388 +10,339 @@
 
 <style>
 :root {
-  --bg: #080b12;
-  --card: #111722;
-  --border: #202a3a;
-  --blue: #398cff;
-  --text: #f4f7ff;
-  --muted: #8995aa;
+  --bg:#080b12;
+  --card:#111927;
+  --border:#202d40;
+  --blue:#398cff;
+  --text:#f4f7ff;
+  --muted:#8995aa;
+  --green:#35d49a;
 }
-
-* { box-sizing: border-box; }
-
+* {box-sizing:border-box}
 body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-  min-height: 100vh;
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;
 }
-
-button, select { font: inherit; }
-
+button,select {font:inherit}
 header {
-  max-width: 650px;
-  margin: auto;
-  padding: 24px 22px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+  max-width:650px;
+  margin:auto;
+  padding:22px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
-
-.logo {
-  font-size: 23px;
-  font-weight: 800;
-  letter-spacing: -1px;
+.logo {font-size:24px;font-weight:850;letter-spacing:-1px}
+.logo span {color:var(--blue)}
+.profile-btn {
+  background:var(--card);
+  border:1px solid var(--border);
+  color:white;
+  padding:11px 15px;
+  border-radius:13px;
 }
-
-.logo span { color: var(--blue); }
-
-.profile {
-  background: var(--card);
-  border: 1px solid var(--border);
-  color: white;
-  padding: 11px 15px;
-  border-radius: 13px;
-}
-
 main {
-  max-width: 650px;
-  margin: 30px auto;
-  padding: 0 20px 110px;
+  max-width:650px;
+  margin:20px auto;
+  padding:0 18px 110px;
 }
-
+.page {display:none}
+.page.active {display:block}
 h1 {
-  font-size: 28px;
-  text-align: center;
-  margin: 10px 0;
-  letter-spacing: -1px;
+  font-size:28px;
+  text-align:center;
+  letter-spacing:-1px;
+  margin:12px 0;
 }
-
 .subtitle {
-  text-align: center;
-  color: var(--muted);
-  margin-bottom: 35px;
+  text-align:center;
+  color:var(--muted);
+  margin-bottom:30px;
 }
-
-.connection {
-  text-align: center;
-  padding: 10px 0 35px;
-}
-
-.power {
-  width: 190px;
-  height: 190px;
-  border-radius: 50%;
-  border: 7px solid #286bd5;
-  background: radial-gradient(circle, #15294a, #0c1423 70%);
-  color: white;
-  font-size: 65px;
-  display: grid;
-  place-items: center;
-  margin: auto;
-  box-shadow: 0 0 35px #267aff20;
-  cursor: pointer;
-  transition: .3s;
-}
-
-.power:active { transform: scale(.96); }
-
-.power.loading {
-  animation: pulse 1s infinite alternate;
-}
-
-@keyframes pulse {
-  from { box-shadow: 0 0 15px #398cff30; }
-  to { box-shadow: 0 0 45px #398cff80; }
-}
-
-.status {
-  font-size: 22px;
-  font-weight: 700;
-  margin-top: 24px;
-}
-
-.hint {
-  color: var(--muted);
-  margin-top: 9px;
-  font-size: 14px;
-}
-
 .card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 20px;
-  margin-bottom: 16px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:20px;
+  margin-bottom:15px;
 }
-
-.server-label {
-  color: var(--muted);
-  font-size: 14px;
-  margin-bottom: 12px;
+.connection {text-align:center;padding:10px 0 30px}
+.power {
+  width:180px;height:180px;
+  border-radius:50%;
+  border:7px solid #286bd5;
+  background:radial-gradient(circle,#19345c,#0c1423 72%);
+  color:white;font-size:65px;
+  display:grid;place-items:center;
+  margin:auto;cursor:pointer;
+  box-shadow:0 0 40px #267aff25;
 }
-
+.power:active {transform:scale(.96)}
+.status {font-size:22px;font-weight:750;margin-top:22px}
+.hint {font-size:13px;color:var(--muted);margin-top:8px}
 .server-select {
-  width: 100%;
-  padding: 15px;
-  border-radius: 13px;
-  border: 1px solid var(--border);
-  background: #0b111c;
-  color: white;
-  outline: none;
+  width:100%;padding:15px;
+  border-radius:13px;
+  border:1px solid var(--border);
+  background:#0b111c;color:white;
 }
-
+.label {font-size:13px;color:var(--muted);margin-bottom:12px}
+.server-card {
+  display:flex;align-items:center;
+  gap:13px;padding:15px;
+  background:#0b111c;
+  border:1px solid var(--border);
+  border-radius:15px;
+  margin-bottom:11px;
+  cursor:pointer;color:white;
+  width:100%;text-align:left;
+}
+.server-card.selected {border-color:var(--blue);background:#13223a}
+.flag {font-size:30px}
+.server-info {flex:1}
+.server-info strong {display:block;margin-bottom:5px}
+.server-info small {color:var(--muted)}
+.dot {
+  width:9px;height:9px;
+  border-radius:50%;
+  background:#e6ad48;
+  display:inline-block;margin-right:5px;
+}
 .grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 13px;
-  margin-top: 17px;
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
 }
-
 .tile {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 17px;
-  padding: 19px 15px;
-  color: white;
-  text-align: left;
-  cursor: pointer;
-  min-height: 105px;
-  transition: .2s;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:17px;
+  padding:18px 14px;
+  text-align:left;color:white;
+  min-height:110px;cursor:pointer;
 }
-
-.tile:active { background: #192438; }
-
-.tile .icon {
-  font-size: 23px;
-  margin-bottom: 13px;
-}
-
-.tile h3 {
-  margin: 0 0 6px;
-  font-size: 16px;
-}
-
-.tile p {
-  margin: 0;
-  font-size: 13px;
-  color: var(--muted);
-}
-
-.about h3 { margin-top: 0; }
-
-.about p {
-  color: var(--muted);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
-.page { display: none; }
-.page.active { display: block; }
-
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #0d131fee;
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-around;
-  padding: 12px 5px calc(12px + env(safe-area-inset-bottom));
-  backdrop-filter: blur(18px);
-  z-index: 10;
-}
-
-.nav-item {
-  border: 0;
-  background: transparent;
-  color: var(--muted);
-  font-size: 11px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  cursor: pointer;
-}
-
-.nav-item span { font-size: 21px; }
-.nav-item.active { color: var(--blue); }
-
+.tile .emoji {font-size:24px;margin-bottom:12px}
+.tile strong {display:block;margin-bottom:5px}
+.tile small {color:var(--muted)}
 .primary {
-  width: 100%;
-  background: var(--blue);
-  color: white;
-  border: none;
-  border-radius: 13px;
-  padding: 16px;
-  font-weight: 700;
-  margin-top: 15px;
-  cursor: pointer;
+  width:100%;padding:16px;
+  background:var(--blue);color:white;
+  border:0;border-radius:13px;
+  font-weight:750;cursor:pointer;
 }
-
-.notice {
-  text-align: center;
-  color: var(--muted);
-  font-size: 12px;
-  margin-top: 20px;
+.info {font-size:14px;color:var(--muted);line-height:1.6}
+.avatar {
+  width:75px;height:75px;
+  border-radius:50%;
+  display:grid;place-items:center;
+  margin:0 auto 15px;
+  background:linear-gradient(135deg,#398cff,#7457e8);
+  font-size:30px;font-weight:800;
 }
-
-.info {
-  color: var(--muted);
-  line-height: 1.6;
-  font-size: 14px;
+.profile-data {
+  display:flex;justify-content:space-between;
+  gap:10px;padding:13px 0;
+  border-bottom:1px solid var(--border);
+  font-size:14px;
 }
-
+.profile-data span:first-child {color:var(--muted)}
+.badge {
+  display:inline-block;
+  background:#342a16;color:#e9bd65;
+  padding:6px 10px;border-radius:20px;
+  font-size:12px;
+}
+.nav {
+  position:fixed;bottom:0;left:0;right:0;
+  background:#0d131fee;
+  border-top:1px solid var(--border);
+  display:flex;justify-content:space-around;
+  padding:12px 5px calc(12px + env(safe-area-inset-bottom));
+  backdrop-filter:blur(18px);
+  z-index:10;
+}
+.nav button {
+  background:none;border:0;color:var(--muted);
+  display:flex;flex-direction:column;
+  align-items:center;gap:5px;font-size:11px;
+}
+.nav button span {font-size:21px}
+.nav button.active {color:var(--blue)}
 footer {
-  text-align: center;
-  color: #657187;
-  font-size: 12px;
-  padding: 20px 10px;
-}
-
-@media(max-width: 400px) {
-  .power { width: 165px; height: 165px; }
-  h1 { font-size: 25px; }
+  text-align:center;color:#657187;
+  font-size:11px;padding:22px 5px;
 }
 </style>
 </head>
 
 <body>
-
 <header>
   <div class="logo">Sfera <span>VPN</span></div>
-  <button class="profile" onclick="openPage('profile')">👤 Профиль</button>
+  <button class="profile-btn" onclick="openPage('profile')">👤 Профиль</button>
 </header>
 
 <main>
 
-<!-- ГЛАВНАЯ -->
 <section class="page active" id="home">
-
   <h1>Твой интернет. Твои правила.</h1>
   <p class="subtitle">Добро пожаловать в Sfera VPN</p>
 
   <div class="connection">
-    <button class="power" onclick="connectVPN()" aria-label="Подключиться">
-      ⏻
-    </button>
+    <button class="power" onclick="connectVPN()">⏻</button>
     <div class="status" id="status">Не подключено</div>
-    <div class="hint" id="hint">Выбери сервер и нажми кнопку</div>
+    <div class="hint" id="hint">Выбери сервер для продолжения</div>
   </div>
 
   <div class="card">
-    <div class="server-label">🌍 Выбрать сервер</div>
-    <select class="server-select" id="country">
-      <option value="Франция">🇫🇷 Франция</option>
-      <option value="Германия">🇩🇪 Германия</option>
-      <option value="Нидерланды">🇳🇱 Нидерланды</option>
+    <div class="label">🌍 ТВОЙ СЕРВЕР</div>
+    <select class="server-select" id="country" onchange="selectServer(this.value)">
+      <option value="fr">🇫🇷 Франция</option>
+      <option value="de">🇩🇪 Германия</option>
+      <option value="nl">🇳🇱 Нидерланды</option>
     </select>
   </div>
 
   <div class="grid">
     <button class="tile" onclick="openPage('servers')">
-      <div class="icon">🌍</div>
-      <h3>Серверы</h3>
-      <p>Выбор локаций</p>
+      <div class="emoji">🌍</div>
+      <strong>Серверы</strong>
+      <small>Выбор локации</small>
     </button>
-
     <button class="tile" onclick="openPage('subscription')">
-      <div class="icon">💎</div>
-      <h3>Подписка</h3>
-      <p>Premium</p>
+      <div class="emoji">💎</div>
+      <strong>Premium</strong>
+      <small>Тарифы и подписка</small>
     </button>
-
     <button class="tile" onclick="openPage('profile')">
-      <div class="icon">👤</div>
-      <h3>Аккаунт</h3>
-      <p id="account">Гостевой режим</p>
+      <div class="emoji">👤</div>
+      <strong>Аккаунт</strong>
+      <small id="accountName">Гость</small>
     </button>
-
     <button class="tile" onclick="openPage('settings')">
-      <div class="icon">⚙️</div>
-      <h3>Настройки</h3>
-      <p>Параметры</p>
+      <div class="emoji">⚙️</div>
+      <strong>Настройки</strong>
+      <small>Параметры приложения</small>
     </button>
   </div>
 
-  <div class="card about" style="margin-top:18px">
-    <h3>О Sfera VPN</h3>
-    <p>Простая платформа для управления VPN-подключением и выбора серверных локаций.</p>
+  <div class="card" style="margin-top:17px">
+    <strong>💙 Sfera VPN</strong>
+    <p class="info">Управляй своим аккаунтом и выбирай серверные локации в одном приложении.</p>
   </div>
-
 </section>
 
-<!-- СЕРВЕРЫ -->
 <section class="page" id="servers">
   <h1>Серверы</h1>
-  <p class="subtitle">Выбери нужную локацию</p>
+  <p class="subtitle">Выбери свою локацию</p>
 
   <div class="card">
-    <select class="server-select" id="country2"
-      onchange="syncCountry(this.value)">
-      <option value="Франция">🇫🇷 Франция</option>
-      <option value="Германия">🇩🇪 Германия</option>
-      <option value="Нидерланды">🇳🇱 Нидерланды</option>
-    </select>
-    <button class="primary" onclick="openPage('home')">
-      Выбрать сервер
+    <div class="label">ДОСТУПНЫЕ ЛОКАЦИИ</div>
+
+    <button class="server-card selected" data-server="fr" onclick="selectServer('fr')">
+      <div class="flag">🇫🇷</div>
+      <div class="server-info">
+        <strong>Франция</strong>
+        <small><span class="dot"></span>Статус не проверен</small>
+      </div>
+      <span>›</span>
     </button>
+
+    <button class="server-card" data-server="de" onclick="selectServer('de')">
+      <div class="flag">🇩🇪</div>
+      <div class="server-info">
+        <strong>Германия</strong>
+        <small><span class="dot"></span>Статус не проверен</small>
+      </div>
+      <span>›</span>
+    </button>
+
+    <button class="server-card" data-server="nl" onclick="selectServer('nl')">
+      <div class="flag">🇳🇱</div>
+      <div class="server-info">
+        <strong>Нидерланды</strong>
+        <small><span class="dot"></span>Статус не проверен</small>
+      </div>
+      <span>›</span>
+    </button>
+
+    <button class="primary" onclick="openPage('home')">Вернуться на главную</button>
   </div>
-  <p class="info">Доступность реальных серверов пока не подтверждена.</p>
+  <p class="info">Локации пока демонстрационные. Реальные серверы ещё не подключены.</p>
 </section>
 
-<!-- ПОДПИСКА -->
 <section class="page" id="subscription">
   <h1>Подписка</h1>
-  <p class="subtitle">Твой Sfera Premium</p>
+  <p class="subtitle">Открой больше возможностей</p>
+
   <div class="card">
-    <h2>💎 Premium</h2>
-    <p class="info">Расширенные возможности Sfera VPN.</p>
-    <p class="info">Тарифы и оплата появятся после настройки платёжной системы.</p>
+    <div style="font-size:35px">💎</div>
+    <h2>Sfera Premium</h2>
+    <p class="info">Будущая премиум-подписка Sfera VPN.</p>
+    <div class="profile-data"><span>Скорость</span><strong>Зависит от сервера</strong></div>
+    <div class="profile-data"><span>Локации</span><strong>В разработке</strong></div>
+    <div class="profile-data"><span>Статус</span><span class="badge">Скоро</span></div>
   </div>
+  <p class="info">Оплата и управление подпиской появятся после подключения платёжной системы.</p>
 </section>
 
-<!-- ПРОФИЛЬ -->
 <section class="page" id="profile">
-  <h1>Профиль</h1>
+  <h1>Мой профиль</h1>
   <p class="subtitle">Твой аккаунт Sfera VPN</p>
-  <div class="card">
+
+  <div class="card" style="text-align:center">
+    <div class="avatar" id="avatar">G</div>
     <h2 id="profileName">Гость</h2>
-    <p class="info" id="profileDetails">Вход через Telegram не выполнен.</p>
+    <p class="info" id="profileUsername">Telegram не подключён</p>
+    <div style="text-align:left;margin-top:20px">
+      <div class="profile-data">
+        <span>Telegram ID</span><strong id="profileId">—</strong>
+      </div>
+      <div class="profile-data">
+        <span>Аккаунт</span><strong id="profileType">Гостевой</strong>
+      </div>
+      <div class="profile-data">
+        <span>Подписка</span><strong>Базовая</strong>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- НАСТРОЙКИ -->
 <section class="page" id="settings">
   <h1>Настройки</h1>
-  <p class="subtitle">Настройки приложения</p>
+  <p class="subtitle">Параметры приложения</p>
+
   <div class="card">
-    <h3>Информация</h3>
-    <p class="info">Sfera VPN 2.0</p>
-    <p class="info">Интерфейс приложения</p>
+    <h3>⚙️ Приложение</h3>
+    <div class="profile-data"><span>Название</span><strong>Sfera VPN</strong></div>
+    <div class="profile-data"><span>Версия</span><strong>3.0</strong></div>
+    <div class="profile-data"><span>Платформа</span><strong>Telegram WebApp</strong></div>
+  </div>
+
+  <div class="card">
+    <h3>💙 О проекте</h3>
+    <p class="info">Sfera VPN — проект приложения для управления VPN-подключением.</p>
   </div>
 </section>
 
 <footer>
   © 2026 Sfera VPN<br><br>
-  Демонстрационная версия. VPN-трафик не защищается.
+  Демонстрационная версия. Реальное VPN-соединение пока не работает.
 </footer>
-
 </main>
 
-<nav class="bottom-nav">
-  <button class="nav-item active" data-page="home" onclick="openPage('home')">
+<nav class="nav">
+  <button class="active" data-page="home" onclick="openPage('home')">
     <span>⌂</span>Главная
   </button>
-  <button class="nav-item" data-page="servers" onclick="openPage('servers')">
+  <button data-page="servers" onclick="openPage('servers')">
     <span>◎</span>Серверы
   </button>
-  <button class="nav-item" data-page="subscription" onclick="openPage('subscription')">
+  <button data-page="subscription" onclick="openPage('subscription')">
     <span>◇</span>Подписка
   </button>
-  <button class="nav-item" data-page="profile" onclick="openPage('profile')">
+  <button data-page="profile" onclick="openPage('profile')">
     <span>♙</span>Профиль
   </button>
 </nav>
@@ -407,68 +358,64 @@ if (tg) {
 
   if (user) {
     const name = user.first_name || "Пользователь";
-
-    document.getElementById("account").textContent = name;
     document.getElementById("profileName").textContent = name;
-    document.getElementById("profileDetails").textContent =
-      "Аккаунт Telegram подключён.";
+    document.getElementById("accountName").textContent = name;
+    document.getElementById("profileId").textContent = user.id || "—";
+    document.getElementById("profileType").textContent = "Telegram";
+    document.getElementById("profileUsername").textContent =
+      user.username ? "@" + user.username : "Telegram аккаунт";
+    document.getElementById("avatar").textContent =
+      name.charAt(0).toUpperCase();
   }
 }
 
-function openPage(page) {
-  document.querySelectorAll(".page").forEach(el => {
-    el.classList.remove("active");
-  });
+const countries = {
+  fr: "Франция",
+  de: "Германия",
+  nl: "Нидерланды"
+};
 
+let selectedServer = "fr";
+
+function openPage(page) {
+  document.querySelectorAll(".page").forEach(el =>
+    el.classList.remove("active")
+  );
   document.getElementById(page).classList.add("active");
 
-  document.querySelectorAll(".nav-item").forEach(el => {
-    el.classList.toggle("active", el.dataset.page === page);
-  });
+  document.querySelectorAll(".nav button").forEach(el =>
+    el.classList.toggle("active", el.dataset.page === page)
+  );
 
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function syncCountry(value) {
-  document.getElementById("country").value = value;
-  document.getElementById("country2").value = value;
+function selectServer(code) {
+  selectedServer = code;
+  document.getElementById("country").value = code;
+
+  document.querySelectorAll(".server-card").forEach(el => {
+    el.classList.toggle("selected", el.dataset.server === code);
+  });
+
+  document.getElementById("hint").textContent =
+    "Выбрана локация: " + countries[code];
+
   openPage("home");
 }
 
-let connecting = false;
-
 function connectVPN() {
-  if (connecting) return;
+  const message =
+    "Демонстрационный режим: сервер " +
+    countries[selectedServer] +
+    " ещё не подключён. Реальное VPN-соединение не установлено.";
 
-  connecting = true;
-
-  const button = document.querySelector(".power");
-  const status = document.getElementById("status");
-  const hint = document.getElementById("hint");
-  const country = document.getElementById("country").value;
-
-  button.classList.add("loading");
-  status.textContent = "Проверка...";
-  hint.textContent = "Демонстрация интерфейса";
-
-  setTimeout(() => {
-    button.classList.remove("loading");
-    status.textContent = "Не подключено";
-    hint.textContent =
-      "Реальное соединение с сервером " + country + " не настроено.";
-
-    connecting = false;
-
-    if (tg) {
-      tg.showAlert(
-        "Это демонстрационный режим. VPN-соединение пока не установлено."
-      );
-    } else {
-      alert("Демонстрационный режим. VPN-соединение не установлено.");
-    }
-  }, 900);
+  if (tg) {
+    tg.showAlert(message);
+  } else {
+    alert(message);
+  }
 }
 </script>
-
 </body>
 </html>
