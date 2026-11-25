@@ -3,20 +3,23 @@
 <html lang="ru">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <meta name="theme-color" content="#080b12">
-<title>Sfera VPN</title>
+<title>Sfera VPN — Neon Edition</title>
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
 <style>
 :root {
   --bg:#080b12;
   --card:#111927;
+  --card2:#0b1320;
   --border:#202d40;
   --blue:#398cff;
+  --blue2:#1766db;
   --text:#f4f7ff;
   --muted:#8995aa;
   --green:#35d49a;
+  --purple:#926cff;
 }
 * {box-sizing:border-box}
 body {
@@ -24,328 +27,651 @@ body {
   background:var(--bg);
   color:var(--text);
   font-family:-apple-system,BlinkMacSystemFont,Arial,sans-serif;
+  transition:background .25s;
 }
-button,select {font:inherit}
+body.light {
+  --bg:#eef3fb;
+  --card:#fff;
+  --card2:#f4f7fc;
+  --border:#dce4f0;
+  --text:#152036;
+  --muted:#697991;
+}
+button,input,select {font:inherit}
+button {cursor:pointer}
 header {
   max-width:650px;
   margin:auto;
-  padding:22px;
+  padding:20px;
   display:flex;
-  justify-content:space-between;
   align-items:center;
+  justify-content:space-between;
 }
-.logo {font-size:24px;font-weight:850;letter-spacing:-1px}
+.logo {
+  font-size:25px;
+  font-weight:900;
+  letter-spacing:-1px;
+}
 .logo span {color:var(--blue)}
+.version {
+  font-size:10px;
+  color:var(--blue);
+  background:#398cff18;
+  padding:5px 8px;
+  border-radius:8px;
+  vertical-align:middle;
+}
 .profile-btn {
   background:var(--card);
   border:1px solid var(--border);
-  color:white;
-  padding:11px 15px;
+  color:var(--text);
+  padding:10px 14px;
   border-radius:13px;
 }
 main {
   max-width:650px;
-  margin:20px auto;
-  padding:0 18px 110px;
+  margin:12px auto;
+  padding:0 17px 110px;
 }
-.page {display:none}
+.page {display:none;animation:fade .22s ease}
 .page.active {display:block}
-h1 {
-  font-size:28px;
-  text-align:center;
-  letter-spacing:-1px;
-  margin:12px 0;
+@keyframes fade {
+  from {opacity:0;transform:translateY(7px)}
+  to {opacity:1;transform:translateY(0)}
 }
+h1 {
+  text-align:center;
+  font-size:28px;
+  letter-spacing:-1px;
+  margin:13px 0;
+}
+h2 {margin:10px 0}
 .subtitle {
   text-align:center;
   color:var(--muted);
-  margin-bottom:30px;
+  font-size:14px;
+  margin-bottom:25px;
 }
 .card {
   background:var(--card);
   border:1px solid var(--border);
   border-radius:20px;
-  padding:20px;
-  margin-bottom:15px;
+  padding:18px;
+  margin-bottom:14px;
 }
-.connection {text-align:center;padding:10px 0 30px}
+.label {
+  font-size:11px;
+  letter-spacing:1px;
+  color:var(--muted);
+  margin-bottom:12px;
+  font-weight:750;
+}
+.info {
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.6;
+}
+.hero {
+  position:relative;
+  overflow:hidden;
+  padding:20px 12px 27px;
+  text-align:center;
+}
+.hero:before {
+  content:"";
+  position:absolute;
+  width:240px;
+  height:240px;
+  background:#267aff13;
+  filter:blur(55px);
+  border-radius:50%;
+  top:10px;
+  left:50%;
+  transform:translateX(-50%);
+}
 .power {
-  width:180px;height:180px;
+  position:relative;
+  width:185px;
+  height:185px;
   border-radius:50%;
-  border:7px solid #286bd5;
-  background:radial-gradient(circle,#19345c,#0c1423 72%);
-  color:white;font-size:65px;
-  display:grid;place-items:center;
-  margin:auto;cursor:pointer;
-  box-shadow:0 0 40px #267aff25;
+  border:2px solid #398cff;
+  background:radial-gradient(circle,#244d80,#111c31 65%,#080d17);
+  color:white;
+  font-size:65px;
+  margin:12px auto;
+  display:grid;
+  place-items:center;
+  box-shadow:0 0 35px #398cff35,inset 0 0 25px #398cff25;
+  transition:.25s;
 }
-.power:active {transform:scale(.96)}
-.status {font-size:22px;font-weight:750;margin-top:22px}
-.hint {font-size:13px;color:var(--muted);margin-top:8px}
-.server-select {
-  width:100%;padding:15px;
-  border-radius:13px;
-  border:1px solid var(--border);
-  background:#0b111c;color:white;
+.power:active {transform:scale(.95)}
+.power:disabled {opacity:.7}
+.power-ring {
+  border-color:var(--green);
+  box-shadow:0 0 40px #35d49a55,inset 0 0 30px #35d49a22;
 }
-.label {font-size:13px;color:var(--muted);margin-bottom:12px}
-.server-card {
-  display:flex;align-items:center;
-  gap:13px;padding:15px;
-  background:#0b111c;
-  border:1px solid var(--border);
-  border-radius:15px;
-  margin-bottom:11px;
-  cursor:pointer;color:white;
-  width:100%;text-align:left;
+.status {
+  font-size:22px;
+  font-weight:800;
+  margin-top:15px;
 }
-.server-card.selected {border-color:var(--blue);background:#13223a}
-.flag {font-size:30px}
-.server-info {flex:1}
-.server-info strong {display:block;margin-bottom:5px}
-.server-info small {color:var(--muted)}
-.dot {
-  width:9px;height:9px;
-  border-radius:50%;
-  background:#e6ad48;
-  display:inline-block;margin-right:5px;
+.hint {
+  color:var(--muted);
+  font-size:12px;
+  margin-top:7px;
 }
 .grid {
   display:grid;
   grid-template-columns:1fr 1fr;
-  gap:12px;
+  gap:11px;
 }
 .tile {
   background:var(--card);
   border:1px solid var(--border);
   border-radius:17px;
-  padding:18px 14px;
-  text-align:left;color:white;
-  min-height:110px;cursor:pointer;
+  padding:16px;
+  color:var(--text);
+  text-align:left;
+  min-height:105px;
+  transition:.2s;
 }
-.tile .emoji {font-size:24px;margin-bottom:12px}
-.tile strong {display:block;margin-bottom:5px}
-.tile small {color:var(--muted)}
+.tile:active {transform:scale(.97)}
+.tile .emoji {font-size:25px;margin-bottom:11px}
+.tile strong {display:block;font-size:14px;margin-bottom:5px}
+.tile small {color:var(--muted);font-size:11px}
 .primary {
-  width:100%;padding:16px;
-  background:var(--blue);color:white;
-  border:0;border-radius:13px;
-  font-weight:750;cursor:pointer;
+  width:100%;
+  padding:15px;
+  background:linear-gradient(110deg,var(--blue),var(--blue2));
+  color:white;
+  border:0;
+  border-radius:13px;
+  font-weight:800;
 }
-.info {font-size:14px;color:var(--muted);line-height:1.6}
+.secondary {
+  width:100%;
+  padding:13px;
+  background:var(--card2);
+  color:var(--text);
+  border:1px solid var(--border);
+  border-radius:12px;
+}
+.server-card {
+  width:100%;
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:15px;
+  margin-bottom:10px;
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:15px;
+  color:var(--text);
+  text-align:left;
+}
+.server-card.selected {
+  border-color:var(--blue);
+  background:#398cff14;
+}
+.flag {font-size:30px}
+.server-info {flex:1}
+.server-info strong {display:block;margin-bottom:5px}
+.server-info small {color:var(--muted);font-size:11px}
+.server-action {font-size:19px;color:var(--blue)}
+.search {
+  width:100%;
+  padding:14px;
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:13px;
+  color:var(--text);
+  outline:none;
+  margin-bottom:13px;
+}
+.stat-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+.stat {
+  padding:15px;
+  background:var(--card2);
+  border-radius:15px;
+  border:1px solid var(--border);
+}
+.stat-icon {font-size:22px}
+.stat-value {font-size:22px;font-weight:850;margin-top:8px}
+.stat-label {font-size:11px;color:var(--muted);margin-top:4px}
+.profile-head {text-align:center;padding:10px}
 .avatar {
-  width:75px;height:75px;
+  width:85px;height:85px;
   border-radius:50%;
-  display:grid;place-items:center;
-  margin:0 auto 15px;
-  background:linear-gradient(135deg,#398cff,#7457e8);
-  font-size:30px;font-weight:800;
+  margin:0 auto 13px;
+  display:grid;
+  place-items:center;
+  background:linear-gradient(135deg,#398cff,#926cff);
+  font-size:32px;
+  font-weight:850;
+  overflow:hidden;
 }
+.avatar img {width:100%;height:100%;object-fit:cover}
 .profile-data {
-  display:flex;justify-content:space-between;
-  gap:10px;padding:13px 0;
+  display:flex;
+  justify-content:space-between;
+  gap:12px;
+  padding:13px 0;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.profile-data span {color:var(--muted)}
+.badge {
+  background:#342a16;
+  color:#e9bd65;
+  padding:6px 10px;
+  border-radius:20px;
+  font-size:11px;
+}
+.badge.blue {background:#142b4b;color:#70b2ff}
+.badge.green {background:#12382c;color:#35d49a}
+.section-title {font-size:16px;font-weight:800;margin:5px 0 14px}
+.history-item {
+  padding:13px 0;
+  border-bottom:1px solid var(--border);
+  font-size:13px;
+}
+.history-item small {
+  display:block;
+  color:var(--muted);
+  margin-top:5px;
+}
+.empty {
+  text-align:center;
+  padding:28px 10px;
+  color:var(--muted);
+  font-size:13px;
+}
+.setting-row {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:14px 0;
   border-bottom:1px solid var(--border);
   font-size:14px;
 }
-.profile-data span:first-child {color:var(--muted)}
-.badge {
-  display:inline-block;
-  background:#342a16;color:#e9bd65;
-  padding:6px 10px;border-radius:20px;
-  font-size:12px;
+.toggle {
+  width:47px;
+  height:26px;
+  border:0;
+  border-radius:20px;
+  background:#344257;
+  position:relative;
 }
+.toggle:after {
+  content:"";
+  position:absolute;
+  width:20px;
+  height:20px;
+  left:3px;
+  top:3px;
+  border-radius:50%;
+  background:white;
+  transition:.2s;
+}
+.toggle.on {background:var(--blue)}
+.toggle.on:after {left:24px}
+.achievement {
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:13px;
+  background:var(--card2);
+  border:1px solid var(--border);
+  border-radius:14px;
+  margin-bottom:10px;
+}
+.achievement-icon {font-size:27px}
+.achievement small {color:var(--muted)}
+.achievement.locked {opacity:.48}
+.premium {
+  text-align:center;
+  background:linear-gradient(145deg,#182c50,#251b42);
+  border:1px solid #4c69aa;
+}
+.premium-icon {font-size:52px}
+.premium h2 {color:#b8caff}
+.premium .info {color:#c3cce0}
 .nav {
-  position:fixed;bottom:0;left:0;right:0;
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  z-index:20;
+  display:flex;
+  justify-content:space-around;
   background:#0d131fee;
-  border-top:1px solid var(--border);
-  display:flex;justify-content:space-around;
-  padding:12px 5px calc(12px + env(safe-area-inset-bottom));
+  border-top:1px solid #202d40;
   backdrop-filter:blur(18px);
-  z-index:10;
+  padding:11px 3px calc(11px + env(safe-area-inset-bottom));
 }
+body.light .nav {background:#ffffffed;border-color:#dce4f0}
 .nav button {
-  background:none;border:0;color:var(--muted);
-  display:flex;flex-direction:column;
-  align-items:center;gap:5px;font-size:11px;
+  border:0;
+  background:none;
+  color:#8995aa;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:4px;
+  font-size:10px;
 }
 .nav button span {font-size:21px}
 .nav button.active {color:var(--blue)}
+.toast {
+  position:fixed;
+  z-index:40;
+  left:50%;
+  bottom:95px;
+  transform:translate(-50%,15px);
+  background:#1b2a40;
+  color:white;
+  border:1px solid #354d6d;
+  border-radius:13px;
+  padding:12px 17px;
+  font-size:13px;
+  opacity:0;
+  pointer-events:none;
+  transition:.25s;
+  width:max-content;
+  max-width:90%;
+  text-align:center;
+}
+.toast.show {opacity:1;transform:translate(-50%,0)}
 footer {
-  text-align:center;color:#657187;
-  font-size:11px;padding:22px 5px;
+  text-align:center;
+  color:var(--muted);
+  font-size:10px;
+  padding:20px 5px;
 }
 </style>
 </head>
 
 <body>
+
 <header>
-  <div class="logo">Sfera <span>VPN</span></div>
+  <div>
+    <div class="logo">Sfera <span>VPN</span></div>
+    <span class="version">5.0 NEON</span>
+  </div>
   <button class="profile-btn" onclick="openPage('profile')">👤 Профиль</button>
 </header>
 
 <main>
 
+<!-- ГЛАВНАЯ -->
+
 <section class="page active" id="home">
   <h1>Твой интернет. Твои правила.</h1>
-  <p class="subtitle">Добро пожаловать в Sfera VPN</p>
+  <p class="subtitle">Добро пожаловать в Sfera</p>
 
-  <div class="connection">
-    <button class="power" onclick="connectVPN()">⏻</button>
+  <div class="card hero">
+    <div class="label">SFERA CONNECTION</div>
+    <button class="power" id="power" onclick="connectVPN()">⏻</button>
     <div class="status" id="status">Не подключено</div>
-    <div class="hint" id="hint">Выбери сервер для продолжения</div>
+    <div class="hint" id="hint">Выбери локацию для просмотра</div>
+    <div style="margin-top:17px">
+      <span class="badge blue">DEMO MODE</span>
+    </div>
   </div>
 
   <div class="card">
-    <div class="label">🌍 ТВОЙ СЕРВЕР</div>
-    <select class="server-select" id="country" onchange="selectServer(this.value)">
-      <option value="fr">🇫🇷 Франция</option>
-      <option value="de">🇩🇪 Германия</option>
-      <option value="nl">🇳🇱 Нидерланды</option>
-    </select>
+    <div class="label">🌍 ТЕКУЩАЯ ЛОКАЦИЯ</div>
+    <div style="display:flex;align-items:center;gap:13px">
+      <div style="font-size:35px" id="homeFlag">🇫🇷</div>
+      <div style="flex:1">
+        <strong id="homeCountry">Франция</strong>
+        <div class="hint">Выбранная локация</div>
+      </div>
+      <button class="secondary" style="width:auto" onclick="openPage('servers')">Изменить</button>
+    </div>
   </div>
 
   <div class="grid">
     <button class="tile" onclick="openPage('servers')">
       <div class="emoji">🌍</div>
-      <strong>Серверы</strong>
-      <small>Выбор локации</small>
+      <strong>Smart Location</strong>
+      <small>Управление локациями</small>
+    </button>
+    <button class="tile" onclick="quickConnect()">
+      <div class="emoji">⚡</div>
+      <strong>Quick Connect</strong>
+      <small>Последний выбор</small>
+    </button>
+    <button class="tile" onclick="openPage('statistics')">
+      <div class="emoji">📊</div>
+      <strong>Sfera Pulse</strong>
+      <small>Статистика приложения</small>
+    </button>
+    <button class="tile" onclick="openPage('achievements')">
+      <div class="emoji">🏆</div>
+      <strong>Достижения</strong>
+      <small>Твои награды</small>
     </button>
     <button class="tile" onclick="openPage('subscription')">
       <div class="emoji">💎</div>
-      <strong>Premium</strong>
-      <small>Тарифы и подписка</small>
-    </button>
-    <button class="tile" onclick="openPage('profile')">
-      <div class="emoji">👤</div>
-      <strong>Аккаунт</strong>
-      <small id="accountName">Гость</small>
+      <strong>Premium Club</strong>
+      <small>Подписка</small>
     </button>
     <button class="tile" onclick="openPage('settings')">
       <div class="emoji">⚙️</div>
       <strong>Настройки</strong>
-      <small>Параметры приложения</small>
+      <small>Персонализация</small>
     </button>
   </div>
 
-  <div class="card" style="margin-top:17px">
-    <strong>💙 Sfera VPN</strong>
-    <p class="info">Управляй своим аккаунтом и выбирай серверные локации в одном приложении.</p>
+  <div class="card" style="margin-top:14px">
+    <strong>💙 Sfera News</strong>
+    <p class="info">
+      Версия 5.0 уже здесь! Новый интерфейс,
+      история действий, статистика и достижения.
+    </p>
   </div>
 </section>
+
+<!-- СЕРВЕРЫ -->
 
 <section class="page" id="servers">
-  <h1>Серверы</h1>
-  <p class="subtitle">Выбери свою локацию</p>
+  <h1>Локации</h1>
+  <p class="subtitle">Выбери любимую страну</p>
+
+  <input class="search" id="serverSearch"
+    placeholder="🔎 Найти страну..." oninput="filterServers()">
 
   <div class="card">
-    <div class="label">ДОСТУПНЫЕ ЛОКАЦИИ</div>
-
-    <button class="server-card selected" data-server="fr" onclick="selectServer('fr')">
-      <div class="flag">🇫🇷</div>
-      <div class="server-info">
-        <strong>Франция</strong>
-        <small><span class="dot"></span>Статус не проверен</small>
-      </div>
-      <span>›</span>
-    </button>
-
-    <button class="server-card" data-server="de" onclick="selectServer('de')">
-      <div class="flag">🇩🇪</div>
-      <div class="server-info">
-        <strong>Германия</strong>
-        <small><span class="dot"></span>Статус не проверен</small>
-      </div>
-      <span>›</span>
-    </button>
-
-    <button class="server-card" data-server="nl" onclick="selectServer('nl')">
-      <div class="flag">🇳🇱</div>
-      <div class="server-info">
-        <strong>Нидерланды</strong>
-        <small><span class="dot"></span>Статус не проверен</small>
-      </div>
-      <span>›</span>
-    </button>
-
-    <button class="primary" onclick="openPage('home')">Вернуться на главную</button>
+    <div class="label">SMART LOCATION</div>
+    <button class="primary" onclick="quickConnect()">⚡ Использовать последний выбор</button>
+    <p class="info">Быстрый переход к последней выбранной локации. Доступность серверов пока не проверяется.</p>
   </div>
-  <p class="info">Локации пока демонстрационные. Реальные серверы ещё не подключены.</p>
+
+  <div class="card">
+    <div class="label">ДОСТУПНЫЕ В ПРИЛОЖЕНИИ ЛОКАЦИИ</div>
+    <div id="serverList"></div>
+  </div>
+  <p class="info">Все страны пока являются демонстрационными локациями. Реальные серверы ещё не подключены.</p>
 </section>
+
+<!-- PREMIUM -->
 
 <section class="page" id="subscription">
-  <h1>Подписка</h1>
-  <p class="subtitle">Открой больше возможностей</p>
+  <h1>Premium Club</h1>
+  <p class="subtitle">Больше возможностей с Sfera</p>
 
-  <div class="card">
-    <div style="font-size:35px">💎</div>
-    <h2>Sfera Premium</h2>
-    <p class="info">Будущая премиум-подписка Sfera VPN.</p>
-    <div class="profile-data"><span>Скорость</span><strong>Зависит от сервера</strong></div>
-    <div class="profile-data"><span>Локации</span><strong>В разработке</strong></div>
+  <div class="card premium">
+    <div class="premium-icon">💎</div>
+    <h2>SFERA PREMIUM</h2>
+    <p class="info">Эксклюзивные возможности в будущем.</p>
+    <div class="profile-data"><span>Дополнительные локации</span><strong>В разработке</strong></div>
+    <div class="profile-data"><span>Приоритетная поддержка</span><strong>В разработке</strong></div>
     <div class="profile-data"><span>Статус</span><span class="badge">Скоро</span></div>
+    <br>
+    <button class="primary" onclick="notify('Платёжная система ещё не подключена')">Скоро появится</button>
   </div>
-  <p class="info">Оплата и управление подпиской появятся после подключения платёжной системы.</p>
+  <div class="card">
+    <strong>Твоя подписка</strong>
+    <div class="profile-data"><span>Текущий тариф</span><strong>Базовый</strong></div>
+    <div class="profile-data"><span>Дата окончания</span><strong>—</strong></div>
+  </div>
 </section>
 
-<section class="page" id="profile">
-  <h1>Мой профиль</h1>
-  <p class="subtitle">Твой аккаунт Sfera VPN</p>
+<!-- ПРОФИЛЬ -->
 
-  <div class="card" style="text-align:center">
+<section class="page" id="profile">
+  <h1>Sfera ID</h1>
+  <p class="subtitle">Твой цифровой профиль</p>
+
+  <div class="card profile-head">
     <div class="avatar" id="avatar">G</div>
     <h2 id="profileName">Гость</h2>
-    <p class="info" id="profileUsername">Telegram не подключён</p>
-    <div style="text-align:left;margin-top:20px">
-      <div class="profile-data">
-        <span>Telegram ID</span><strong id="profileId">—</strong>
+    <p class="info" id="username">Telegram не подключён</p>
+    <span class="badge blue" id="accountBadge">GUEST ACCOUNT</span>
+  </div>
+
+  <div class="card">
+    <div class="label">ИНФОРМАЦИЯ ОБ АККАУНТЕ</div>
+    <div class="profile-data"><span>Telegram ID</span><strong id="telegramId">—</strong></div>
+    <div class="profile-data"><span>Аккаунт</span><strong id="accountType">Гостевой</strong></div>
+    <div class="profile-data"><span>Подписка</span><strong>Базовая</strong></div>
+    <div class="profile-data"><span>Выбранный сервер</span><strong id="profileServer">Франция</strong></div>
+  </div>
+
+  <div class="card">
+    <strong>💙 Sfera ID</strong>
+    <p class="info">Данные профиля отображаются из Telegram, если приложение открыто через Telegram Mini App. Это ещё не полноценная серверная регистрация.</p>
+  </div>
+</section>
+
+<!-- СТАТИСТИКА -->
+
+<section class="page" id="statistics">
+  <h1>Sfera Pulse</h1>
+  <p class="subtitle">Активность твоего приложения</p>
+
+  <div class="card">
+    <div class="label">ТВОЯ СТАТИСТИКА</div>
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-icon">🌍</div>
+        <div class="stat-value" id="statCountries">1</div>
+        <div class="stat-label">Выбрано стран</div>
       </div>
-      <div class="profile-data">
-        <span>Аккаунт</span><strong id="profileType">Гостевой</strong>
+      <div class="stat">
+        <div class="stat-icon">⚡</div>
+        <div class="stat-value" id="statActions">0</div>
+        <div class="stat-label">Действий</div>
       </div>
-      <div class="profile-data">
-        <span>Подписка</span><strong>Базовая</strong>
+      <div class="stat">
+        <div class="stat-icon">📋</div>
+        <div class="stat-value" id="statHistory">0</div>
+        <div class="stat-label">Записей истории</div>
+      </div>
+      <div class="stat">
+        <div class="stat-icon">🏆</div>
+        <div class="stat-value" id="statAchievements">0</div>
+        <div class="stat-label">Достижений</div>
       </div>
     </div>
   </div>
+
+  <div class="card">
+    <strong>📈 Активность</strong>
+    <p class="info">Статистика отражает действия в приложении на этом устройстве, а не сетевой трафик VPN.</p>
+    <div class="profile-data"><span>Первый запуск</span><strong id="firstLaunch">Сегодня</strong></div>
+    <div class="profile-data"><span>Последнее действие</span><strong id="lastAction">—</strong></div>
+  </div>
 </section>
+
+<!-- ДОСТИЖЕНИЯ -->
+
+<section class="page" id="achievements">
+  <h1>Достижения</h1>
+  <p class="subtitle">Собирай награды Sfera</p>
+
+  <div class="card">
+    <div class="label">ТВОЙ ПРОГРЕСС</div>
+    <div style="font-size:27px;font-weight:850" id="achievementProgress">0 / 5</div>
+    <p class="info">Открывай новые достижения, исследуя приложение.</p>
+  </div>
+
+  <div id="achievementList"></div>
+</section>
+
+<!-- ИСТОРИЯ -->
+
+<section class="page" id="history">
+  <h1>История</h1>
+  <p class="subtitle">Твои последние действия</p>
+
+  <div class="card">
+    <div id="historyList"></div>
+    <button class="secondary" onclick="clearHistory()">Очистить историю</button>
+  </div>
+</section>
+
+<!-- НАСТРОЙКИ -->
 
 <section class="page" id="settings">
   <h1>Настройки</h1>
-  <p class="subtitle">Параметры приложения</p>
+  <p class="subtitle">Сделай Sfera своим</p>
 
   <div class="card">
-    <h3>⚙️ Приложение</h3>
-    <div class="profile-data"><span>Название</span><strong>Sfera VPN</strong></div>
-    <div class="profile-data"><span>Версия</span><strong>3.0</strong></div>
-    <div class="profile-data"><span>Платформа</span><strong>Telegram WebApp</strong></div>
+    <div class="label">ПЕРСОНАЛИЗАЦИЯ</div>
+    <div class="setting-row">
+      <span>🌙 Светлая тема</span>
+      <button class="toggle" id="themeToggle" onclick="toggleTheme()"></button>
+    </div>
+    <div class="setting-row">
+      <span>🔔 Уведомления Telegram</span>
+      <button class="toggle" id="notifyToggle" onclick="toggleNotifications()"></button>
+    </div>
   </div>
 
   <div class="card">
-    <h3>💙 О проекте</h3>
-    <p class="info">Sfera VPN — проект приложения для управления VPN-подключением.</p>
+    <div class="label">ПРИЛОЖЕНИЕ</div>
+    <div class="profile-data"><span>Название</span><strong>Sfera VPN</strong></div>
+    <div class="profile-data"><span>Версия</span><strong>5.0 Neon</strong></div>
+    <div class="profile-data"><span>Платформа</span><strong>WebApp</strong></div>
+    <div class="profile-data"><span>Хранилище</span><strong>Локальное</strong></div>
+  </div>
+
+  <div class="card">
+    <strong>🧹 Управление данными</strong>
+    <p class="info">Сбросить локальные настройки и историю приложения.</p>
+    <button class="secondary" onclick="resetData()">Сбросить данные</button>
+  </div>
+
+  <div class="card">
+    <strong>💙 О проекте</strong>
+    <p class="info">Sfera VPN — твоя цифровая сфера свободы.</p>
   </div>
 </section>
 
 <footer>
-  © 2026 Sfera VPN<br><br>
-  Демонстрационная версия. Реальное VPN-соединение пока не работает.
+  Sfera VPN · 2026<br><br>
+  Version 5.0 Neon Edition<br>
+  Демонстрационная версия
 </footer>
+
 </main>
 
 <nav class="nav">
-  <button class="active" data-page="home" onclick="openPage('home')">
-    <span>⌂</span>Главная
-  </button>
-  <button data-page="servers" onclick="openPage('servers')">
-    <span>◎</span>Серверы
-  </button>
-  <button data-page="subscription" onclick="openPage('subscription')">
-    <span>◇</span>Подписка
-  </button>
-  <button data-page="profile" onclick="openPage('profile')">
-    <span>♙</span>Профиль
-  </button>
+  <button class="active" data-page="home" onclick="openPage('home')"><span>⌂</span>Главная</button>
+  <button data-page="servers" onclick="openPage('servers')"><span>◎</span>Серверы</button>
+  <button data-page="statistics" onclick="openPage('statistics')"><span>◉</span>Pulse</button>
+  <button data-page="profile" onclick="openPage('profile')"><span>♙</span>Профиль</button>
+  <button data-page="settings" onclick="openPage('settings')"><span>⚙</span>Ещё</button>
 </nav>
+
+<div class="toast" id="toast"></div>
 
 <script>
 const tg = window.Telegram?.WebApp;
@@ -353,69 +679,397 @@ const tg = window.Telegram?.WebApp;
 if (tg) {
   tg.ready();
   tg.expand();
-
-  const user = tg.initDataUnsafe?.user;
-
-  if (user) {
-    const name = user.first_name || "Пользователь";
-    document.getElementById("profileName").textContent = name;
-    document.getElementById("accountName").textContent = name;
-    document.getElementById("profileId").textContent = user.id || "—";
-    document.getElementById("profileType").textContent = "Telegram";
-    document.getElementById("profileUsername").textContent =
-      user.username ? "@" + user.username : "Telegram аккаунт";
-    document.getElementById("avatar").textContent =
-      name.charAt(0).toUpperCase();
-  }
 }
 
 const countries = {
-  fr: "Франция",
-  de: "Германия",
-  nl: "Нидерланды"
+  fr:{name:"Франция",flag:"🇫🇷"},
+  de:{name:"Германия",flag:"🇩🇪"},
+  nl:{name:"Нидерланды",flag:"🇳🇱"}
 };
 
-let selectedServer = "fr";
+const defaultData = {
+  server:"fr",
+  favorites:["fr"],
+  history:[],
+  actions:0,
+  theme:"dark",
+  notifications:true,
+  countriesUsed:[],
+  firstLaunch:new Date().toISOString()
+};
+
+let data = {...defaultData};
+let toastTimeout;
+
+function loadData() {
+  try {
+    const saved = JSON.parse(localStorage.getItem("sfera_v5"));
+
+    if(saved && typeof saved === "object") {
+      data = {...defaultData,...saved};
+    }
+  } catch(e) {
+    data = {...defaultData};
+  }
+
+  if(!countries[data.server]) data.server="fr";
+  if(!Array.isArray(data.favorites)) data.favorites=["fr"];
+  if(!Array.isArray(data.history)) data.history=[];
+  if(!Array.isArray(data.countriesUsed)) data.countriesUsed=[];
+
+  if(!data.firstLaunch) data.firstLaunch=new Date().toISOString();
+
+  if(data.theme !== "light") data.theme="dark";
+}
+
+function saveData() {
+  try {
+    localStorage.setItem("sfera_v5",JSON.stringify(data));
+  } catch(e) {
+    console.warn("Storage unavailable");
+  }
+}
+
+function notify(message) {
+  const toast=document.getElementById("toast");
+  toast.textContent=message;
+  toast.classList.add("show");
+
+  clearTimeout(toastTimeout);
+  toastTimeout=setTimeout(()=>toast.classList.remove("show"),2400);
+}
 
 function openPage(page) {
-  document.querySelectorAll(".page").forEach(el =>
-    el.classList.remove("active")
-  );
-  document.getElementById(page).classList.add("active");
+  const target=document.getElementById(page);
+  if(!target) return;
 
-  document.querySelectorAll(".nav button").forEach(el =>
-    el.classList.toggle("active", el.dataset.page === page)
-  );
+  document.querySelectorAll(".page").forEach(el=>el.classList.remove("active"));
+  target.classList.add("active");
+
+  document.querySelectorAll(".nav button").forEach(el=>{
+    el.classList.toggle("active",el.dataset.page===page);
+  });
+
+  if(page==="history") renderHistory();
+  if(page==="statistics") renderStats();
+  if(page==="achievements") renderAchievements();
+  if(page==="servers") renderServers();
 
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function selectServer(code) {
-  selectedServer = code;
-  document.getElementById("country").value = code;
-
-  document.querySelectorAll(".server-card").forEach(el => {
-    el.classList.toggle("selected", el.dataset.server === code);
+function addHistory(action,details) {
+  data.actions++;
+  data.history.unshift({
+    action,
+    details,
+    date:new Date().toLocaleString("ru-RU")
   });
 
-  document.getElementById("hint").textContent =
-    "Выбрана локация: " + countries[code];
+  data.history=data.history.slice(0,50);
+  saveData();
+}
 
+function selectServer(code) {
+  if(!countries[code]) return;
+
+  data.server=code;
+
+  if(!data.countriesUsed.includes(code)) {
+    data.countriesUsed.push(code);
+  }
+
+  addHistory("Выбрана локация",countries[code].name);
+  updateHome();
+  renderServers();
+  openPage("home");
+  notify("Выбрана локация: "+countries[code].name);
+}
+
+function updateHome() {
+  const server=countries[data.server];
+
+  document.getElementById("countryName");
+  document.getElementById("homeCountry").textContent=server.name;
+  document.getElementById("homeFlag").textContent=server.flag;
+  document.getElementById("profileServer").textContent=server.name;
+}
+
+function renderServers() {
+  const list=document.getElementById("serverList");
+  const query=(document.getElementById("serverSearch")?.value || "").toLowerCase();
+
+  list.replaceChildren();
+
+  Object.entries(countries).forEach(([code,country])=>{
+    if(!country.name.toLowerCase().includes(query)) return;
+
+    const button=document.createElement("button");
+    button.className="server-card"+(data.server===code?" selected":"");
+
+    const flag=document.createElement("div");
+    flag.className="flag";
+    flag.textContent=country.flag;
+
+    const info=document.createElement("div");
+    info.className="server-info";
+
+    const name=document.createElement("strong");
+    name.textContent=country.name;
+
+    const small=document.createElement("small");
+    small.textContent=data.server===code?"Выбрана":"Демо-локация";
+
+    info.append(name,small);
+
+    const star=document.createElement("span");
+    star.className="server-action";
+    star.textContent=data.favorites.includes(code)?"★":"☆";
+    star.title="Избранное";
+
+    star.addEventListener("click",event=>{
+      event.stopPropagation();
+      toggleFavorite(code);
+    });
+
+    button.append(flag,info,star);
+    button.addEventListener("click",()=>selectServer(code));
+
+    list.append(button);
+  });
+
+  if(!list.children.length) {
+    const empty=document.createElement("div");
+    empty.className="empty";
+    empty.textContent="Страна не найдена";
+    list.append(empty);
+  }
+}
+
+function filterServers() {
+  renderServers();
+}
+
+function toggleFavorite(code) {
+  if(data.favorites.includes(code)) {
+    data.favorites=data.favorites.filter(x=>x!==code);
+    notify("Удалено из избранного");
+  } else {
+    data.favorites.push(code);
+    notify("Добавлено в избранное ★");
+  }
+
+  saveData();
+  renderServers();
+}
+
+function quickConnect() {
+  notify("Последняя локация: "+countries[data.server].name);
   openPage("home");
 }
 
 function connectVPN() {
-  const message =
-    "Демонстрационный режим: сервер " +
-    countries[selectedServer] +
-    " ещё не подключён. Реальное VPN-соединение не установлено.";
+  addHistory("Нажата кнопка подключения",countries[data.server].name);
+  notify("Демо-режим: реальное VPN-соединение не установлено");
+  renderStats();
+}
 
-  if (tg) {
-    tg.showAlert(message);
+function renderHistory() {
+  const list=document.getElementById("historyList");
+  list.replaceChildren();
+
+  if(!data.history.length) {
+    const empty=document.createElement("div");
+    empty.className="empty";
+    empty.textContent="📋 История пока пуста";
+    list.append(empty);
+    return;
+  }
+
+  data.history.forEach(item=>{
+    const entry=document.createElement("div");
+    entry.className="history-item";
+
+    const title=document.createElement("strong");
+    title.textContent=item.action;
+
+    const detail=document.createElement("div");
+    detail.textContent=item.details;
+
+    const date=document.createElement("small");
+    date.textContent=item.date;
+
+    entry.append(title,detail,date);
+    list.append(entry);
+  });
+}
+
+function clearHistory() {
+  if(!confirm("Очистить историю действий?")) return;
+
+  data.history=[];
+  saveData();
+  renderHistory();
+  notify("История очищена");
+}
+
+const achievements = [
+  {id:"first",icon:"🚀",name:"Первый запуск",description:"Открыть Sfera VPN",check:()=>true},
+  {id:"explorer",icon:"🌍",name:"Исследователь",description:"Выбрать две разные страны",check:()=>data.countriesUsed.length>=2},
+  {id:"active",icon:"⚡",name:"Активный пользователь",description:"Совершить 10 действий",check:()=>data.actions>=10},
+  {id:"collector",icon:"⭐",name:"Коллекционер",description:"Добавить две страны в избранное",check:()=>data.favorites.length>=2},
+  {id:"history",icon:"📋",name:"История создана",description:"Сделать пять записей",check:()=>data.history.length>=5}
+];
+
+function unlockedAchievements() {
+  return achievements.filter(a=>a.check());
+}
+
+function renderAchievements() {
+  const list=document.getElementById("achievementList");
+  list.replaceChildren();
+
+  const unlocked=unlockedAchievements();
+
+  document.getElementById("achievementProgress").textContent=
+    unlocked.length+" / "+achievements.length;
+
+  achievements.forEach(item=>{
+    const active=item.check();
+
+    const box=document.createElement("div");
+    box.className="achievement"+(active?"":" locked");
+
+    const icon=document.createElement("div");
+    icon.className="achievement-icon";
+    icon.textContent=item.icon;
+
+    const content=document.createElement("div");
+
+    const name=document.createElement("strong");
+    name.textContent=item.name;
+
+    const description=document.createElement("small");
+    description.style.display="block";
+    description.textContent=item.description;
+
+    const status=document.createElement("small");
+    status.style.display="block";
+    status.style.marginTop="5px";
+    status.textContent=active?"✓ Открыто":"🔒 Не открыто";
+
+    content.append(name,description,status);
+    box.append(icon,content);
+    list.append(box);
+  });
+}
+
+function renderStats() {
+  document.getElementById("statCountries").textContent=
+    Math.max(1,data.countriesUsed.length);
+
+  document.getElementById("statActions").textContent=data.actions;
+  document.getElementById("statHistory").textContent=data.history.length;
+  document.getElementById("statAchievements").textContent=
+    unlockedAchievements().length;
+
+  document.getElementById("firstLaunch").textContent=
+    new Date(data.firstLaunch).toLocaleDateString("ru-RU");
+
+  document.getElementById("lastAction").textContent=
+    data.history[0]?.date || "—";
+}
+
+function loadProfile() {
+  const user=tg?.initDataUnsafe?.user;
+
+  if(!user) return;
+
+  const name=user.first_name || "Пользователь";
+
+  document.getElementById("profileName").textContent=name;
+  document.getElementById("username").textContent=
+    user.username?"@"+user.username:"Telegram аккаунт";
+
+  document.getElementById("telegramId").textContent=user.id || "—";
+  document.getElementById("accountType").textContent="Telegram";
+  document.getElementById("accountBadge").textContent="TELEGRAM ACCOUNT";
+
+  const avatar=document.getElementById("avatar");
+
+  if(user.photo_url) {
+    const img=document.createElement("img");
+    img.src=user.photo_url;
+    img.alt="Аватар";
+    avatar.replaceChildren(img);
   } else {
-    alert(message);
+    avatar.textContent=name.charAt(0).toUpperCase();
   }
 }
+
+function applyTheme() {
+  document.body.classList.toggle("light",data.theme==="light");
+  document.getElementById("themeToggle").classList.toggle("on",data.theme==="light");
+  document.getElementById("notifyToggle").classList.toggle("on",data.notifications);
+}
+
+function toggleTheme() {
+  data.theme=data.theme==="light"?"dark":"light";
+  saveData();
+  applyTheme();
+  notify("Тема изменена");
+}
+
+function toggleNotifications() {
+  data.notifications=!data.notifications;
+  saveData();
+  applyTheme();
+  notify("Настройка сохранена");
+}
+
+function resetData() {
+  if(!confirm("Сбросить локальные данные Sfera VPN?")) return;
+
+  try {
+    localStorage.removeItem("sfera_v5");
+  } catch(e) {}
+
+  data={...defaultData};
+  data.firstLaunch=new Date().toISOString();
+  data.countriesUsed=[];
+  saveData();
+
+  applyTheme();
+  updateHome();
+  renderServers();
+  renderStats();
+  renderAchievements();
+  notify("Локальные данные сброшены");
+  openPage("home");
+}
+
+function initialize() {
+  loadData();
+
+  if(!data.countriesUsed.includes(data.server)) {
+    data.countriesUsed.push(data.server);
+  }
+
+  loadProfile();
+  applyTheme();
+  updateHome();
+  renderServers();
+  renderStats();
+  renderAchievements();
+
+  if(!sessionStorage.getItem("sfera_opened")) {
+    sessionStorage.setItem("sfera_opened","yes");
+    addHistory("Открыто приложение","Sfera VPN 5.0");
+  }
+}
+
+initialize();
 </script>
+
 </body>
 </html>
